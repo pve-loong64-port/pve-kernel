@@ -26,7 +26,7 @@ HDRPACKAGE=proxmox-headers-$(KVNAME)
 
 ARCH=$(shell dpkg-architecture -qDEB_HOST_ARCH)
 
-SUPPORTED_ARCHS = amd64 arm64
+SUPPORTED_ARCHS = amd64 arm64 loong64
 ifeq ($(filter $(ARCH),$(SUPPORTED_ARCHS)),)
 $(error Unsupported architecture: $(ARCH). Supported: $(SUPPORTED_ARCHS))
 endif
@@ -34,6 +34,7 @@ endif
 # map Debian arch to kernel source arch directory name
 KERNEL_ARCH_amd64 = x86
 KERNEL_ARCH_arm64 = arm64
+KERNEL_ARCH_loong64 = loongarch
 KERNEL_ARCH = $(KERNEL_ARCH_$(ARCH))
 
 SKIPABI=0
