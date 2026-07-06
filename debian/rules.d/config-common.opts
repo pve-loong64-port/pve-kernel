@@ -63,7 +63,7 @@
 --set-str CONFIG_SYSTEM_REVOCATION_KEYS ""
 -e CONFIG_SECURITY_LOCKDOWN_LSM
 -e CONFIG_SECURITY_LOCKDOWN_LSM_EARLY
---set-str CONFIG_LSM lockdown,yama,integrity,apparmor
+--set-str CONFIG_LSM landlock,lockdown,yama,integrity,apparmor
 -d CONFIG_WQ_CPU_INTENSIVE_REPORT
 -d CONFIG_N_GSM
 -d UBSAN_BOUNDS
