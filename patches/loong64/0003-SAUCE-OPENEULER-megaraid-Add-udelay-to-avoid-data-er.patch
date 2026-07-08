@@ -1,0 +1,46 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: zhangtianyang <zhangtianyang@loongson.cn>
+Date: Thu, 24 Jul 2025 10:50:40 +0800
+Subject: [PATCH] SAUCE: OPENEULER: megaraid: Add udelay to avoid data error
+ caused by dma sequence
+
+LoongArch inclusion
+category: feature
+bugzilla: https://gitee.com/openeuler/kernel/issues/ICOFL4
+CVE: NA
+
+--------------------------------
+
+There is no guarantee of sequence between DMA
+and interrupts on the Loongson platform.
+
+Signed-off-by: songwenge <songwenge@loongson.cn>
+Signed-off-by: zhangtianyang <zhangtianyang@loongson.cn>
+Change-Id: I20f03062f766eb5b4cfe7e2eef5a8785234ebc09
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+
+Link: https://mailweb.openeuler.org/archives/list/kernel@openeuler.org/thread/5R27XEKFARTZ5XX77ZMDERWEVR2UK4JC/
+Signed-off-by: Kaiyang Wu <wukaiyang@loongfans.cn>
+---
+ drivers/scsi/megaraid/megaraid_sas_fusion.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+index 2699e4e09b5bebd9462bba17608ef4f5d2ca9a7a..18d70cf9ebbd467f17db951b821f721554bb2b5f 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -3874,7 +3874,13 @@ static irqreturn_t megasas_isr_fusion(int irq, void *devp)
+ 		instance->instancet->clear_intr(instance);
+ 		return IRQ_HANDLED;
+ 	}
+-
++#ifdef CONFIG_LOONGARCH
++	/*
++	 * There is no guarantee of sequence between DMA
++	 * and interrupts on the Loongson platform.
++	 */
++	udelay(30);
++#endif
+ 	return complete_cmd_fusion(instance, irq_context->MSIxIndex, irq_context)
+ 			? IRQ_HANDLED : IRQ_NONE;
+ }

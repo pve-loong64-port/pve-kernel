@@ -1,0 +1,55 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: zhangtianyang <zhangtianyang@loongson.cn>
+Date: Thu, 24 Jul 2025 10:50:39 +0800
+Subject: [PATCH] SAUCE: OPENEULER: nvme: Add udelay to avoid data error caused
+ by dma sequence
+
+LoongArch inclusion
+category: feature
+bugzilla: https://gitee.com/openeuler/kernel/issues/ICOFL4
+CVE: NA
+
+--------------------------------
+
+There is no guarantee of sequence between DMA
+and interrupts on the Loongson platform.
+
+Signed-off-by: songwenge <songwenge@loongson.cn>
+Signed-off-by: zhangtianyang <zhangtianyang@loongson.cn>
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+
+Link: https://mailweb.openeuler.org/archives/list/kernel@openeuler.org/thread/5R27XEKFARTZ5XX77ZMDERWEVR2UK4JC/
+Signed-off-by: Kaiyang Wu <wukaiyang@loongfans.cn>
+---
+ drivers/nvme/host/pci.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index a0e9767bc21e6671ca60e70525a2d2563854bdc5..b6d0c935772e9049207aa3155b0d3a3d2c3c3481 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -9,6 +9,9 @@
+ #include <linux/blkdev.h>
+ #include <linux/blk-mq-dma.h>
+ #include <linux/blk-integrity.h>
++#ifdef CONFIG_LOONGARCH
++#include <linux/delay.h>
++#endif
+ #include <linux/dmi.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+@@ -1627,6 +1630,14 @@ static irqreturn_t nvme_irq(int irq, void *data)
+ 	struct nvme_queue *nvmeq = data;
+ 	DEFINE_IO_COMP_BATCH(iob);
+ 
++#ifdef CONFIG_LOONGARCH
++	/*
++	 * There is no guarantee of sequence between DMA
++	 * and interrupts on the Loongson platform.
++	 */
++	udelay(30);
++#endif
++
+ 	if (nvme_poll_cq(nvmeq, &iob)) {
+ 		if (!rq_list_empty(&iob.req_list))
+ 			nvme_pci_complete_batch(&iob);
