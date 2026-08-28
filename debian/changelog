@@ -1,3 +1,60 @@
+proxmox-kernel-7.0 (7.0.14-15) trixie; urgency=medium
+
+  * cherry-pick fixes for relevant CVEs, most notable ones:
+    - CVE-2026-64554: use-after-free write in the bridge IPv6 fragmentation
+      path, which a VM guest can trigger on a firewalled bridge
+    - CVE-2026-74703, CVE-2026-74684: crashes in vhost-scsi and in the tap
+      device that a malicious guest can trigger
+    - CVE-2026-74439: the VT-d IOMMU tore down a context entry while it was
+      still marked present, letting a device DMA into freed page tables on
+      passthrough release
+    - CVE-2026-74705: use-after-free in the UDP tunnel segmentation path,
+      which VXLAN and GENEVE overlays use
+    - CVE-2026-74556: a malicious iSCSI target could overflow a connection
+      buffer of the initiator
+    - CVE-2026-68138: double free of a globally shared rate table, reachable
+      from two containers setting up traffic control in parallel
+    - CVE-2026-74598: leak of kernel heap bytes into a route, through a
+      crafted IPv6 router advertisement
+    - the other CVEs fixed in this release:
+      CVE-2026-74565, CVE-2026-72252, CVE-2026-72320, CVE-2026-72254,
+      CVE-2026-72416, CVE-2026-72434, CVE-2026-72435, CVE-2026-72251,
+      CVE-2026-74569, CVE-2026-72338, CVE-2026-64530, CVE-2026-68377,
+      CVE-2026-74290, CVE-2026-72390, CVE-2026-74267, CVE-2026-72035,
+      CVE-2026-74284, CVE-2026-72444, CVE-2026-74264, CVE-2026-64542,
+      CVE-2026-64538, CVE-2026-72392, CVE-2026-74562, CVE-2026-74561,
+      CVE-2026-68127, CVE-2026-74496, CVE-2026-72408, CVE-2026-72407,
+      CVE-2026-72019, CVE-2026-74667, CVE-2026-64537, CVE-2026-68170,
+      CVE-2026-68169, CVE-2026-64551, CVE-2026-74577, CVE-2026-74689,
+      CVE-2026-68432, CVE-2026-68142, CVE-2026-72051, CVE-2026-72052,
+      CVE-2026-72053, CVE-2026-72054, CVE-2026-72055, CVE-2026-72061,
+      CVE-2026-72136, CVE-2026-74557, CVE-2026-68145, CVE-2026-72034,
+      CVE-2026-74485, CVE-2026-74363, CVE-2026-64563, CVE-2026-64560,
+      CVE-2026-72455, CVE-2026-74702, CVE-2026-74607, CVE-2026-74625,
+      CVE-2026-74695, CVE-2026-74620, CVE-2026-74700, CVE-2026-74663,
+      CVE-2026-74630, CVE-2026-74656, CVE-2026-74662, CVE-2026-74615,
+      CVE-2026-74597, CVE-2026-74666, CVE-2026-74668, CVE-2026-74710,
+      CVE-2026-74688, CVE-2026-74588, CVE-2026-74587, CVE-2026-74586,
+      CVE-2026-74610, CVE-2026-74608, CVE-2026-74730, CVE-2026-74632,
+      CVE-2026-72297, CVE-2026-68338, CVE-2026-74709, CVE-2026-74708,
+      CVE-2026-74752, CVE-2026-80590, CVE-2026-80681, CVE-2026-74748,
+      CVE-2026-74746, CVE-2026-74739, CVE-2026-74740, CVE-2026-80521,
+      CVE-2026-80646, CVE-2026-80717, CVE-2026-80588, CVE-2026-80586,
+      CVE-2026-80561, CVE-2026-80558, CVE-2026-80557, CVE-2026-80589,
+      CVE-2026-80536, CVE-2026-80630
+
+  * fix a race where a block request could get a zero start timestamp, which
+    then added about the system uptime to the disk IO time counters, showing
+    bogus IO load in graphs and monitoring.
+
+  * fix a crash, or silent corruption of unrelated in-flight IO, on hosts with
+    NVMe disks behind a MegaRAID (megaraid_sas) controller, where the driver
+    described requests bigger than about 2 MiB in a buffer too small to hold
+    them. Only disks whose firmware reports a large maximum transfer size ever
+    got requests that big, which is why this affected some setups only.
+
+ -- Proxmox Support Team <support@proxmox.com>  Wed, 26 Aug 2026 16:21:31 +0200
+
 proxmox-kernel-7.0 (7.0.14-14) trixie; urgency=medium
 
   * update ZFS to 2.4.4.
