@@ -32,6 +32,7 @@ Link: https://patch.msgid.link/20260804200042.2412009-1-Jeremy.Jean@oss.cyber.go
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 (cherry picked from commit 88619b117be1daf633ce32210570ce35a0bd1c98)
+CVE-2026-74752
 Signed-off-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
 ---
  include/net/sctp/auth.h  |  3 ++
