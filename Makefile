@@ -119,7 +119,7 @@ $(KERNEL_SRC).prepared: $(KERNEL_SRC_SUBMODULE) | submodule
 	sed -i $(BUILD_DIR)/$(KERNEL_SRC)/Makefile -e 's/^EXTRAVERSION.*$$/EXTRAVERSION=$(EXTRAVERSION)/'
 	rm -rf $(BUILD_DIR)/$(KERNEL_SRC)/debian $(BUILD_DIR)/$(KERNEL_SRC)/debian.master
 	set -e; cd $(BUILD_DIR)/$(KERNEL_SRC); \
-	  for patch in ../../patches/kernel/*.patch; do \
+	  for patch in ../../patches/kernel/*.patch ../../patches/loong64/*.patch; do \
 	    echo "applying patch '$$patch'"; \
 	    patch --batch -p1 < "$${patch}"; \
 	  done
