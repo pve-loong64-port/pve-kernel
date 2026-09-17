@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kaiyang Wu <wukaiyang@loongfans.cn>
+Date: Thu, 17 Sep 2026 17:33:22 +0800
+Subject: [PATCH] PVE-LOONG64: apply "bpf: Restrict JIT predictor flush to
+ cBPF" to loongarch
+
+---
+ arch/loongarch/net/bpf_jit.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+index 40cd7beac0bec8d3c9e75946ad4b18b357dee893..34b54c01481da66ad4304592404ad693bc799a2a 100644
+--- a/arch/loongarch/net/bpf_jit.c
++++ b/arch/loongarch/net/bpf_jit.c
+@@ -2034,7 +2034,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 	image_size = prog_size + extable_size;
+ 	/* Now we know the size of the structure to make */
+ 	ro_header = bpf_jit_binary_pack_alloc(image_size, &ro_image_ptr, sizeof(u32),
+-					      &header, &image_ptr, jit_fill_hole);
++					      &header, &image_ptr, jit_fill_hole,
++					      bpf_prog_was_classic(prog));
+ 	if (!ro_header) {
+ 		prog = orig_prog;
+ 		goto out_offset;
